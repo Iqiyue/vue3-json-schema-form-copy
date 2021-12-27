@@ -1,12 +1,13 @@
-import { defineComponent, ref } from "vue";
+import { defineComponent, reactive, ref, watchEffect } from "vue";
 import { createUseStyles } from "vue-jss";
 
 import demos from "./demos";
 console.log(demos);
 import MonacoEditor from "./components/MonacoEditor";
 import demo from "./demos/demo";
+import { Schema } from "../lib/types";
 const useStyles = createUseStyles({
-  contniner: {
+  container: {
     display: "flex",
     flexDirection: "column",
     height: "100%",
@@ -58,10 +59,41 @@ const useStyles = createUseStyles({
     },
   },
 });
+function toJson(data: any) {
+  return JSON.stringify(data, null, 2)
+}
 export default defineComponent({
   setup() {
     const selectedRef = ref<number>(0);
-    const demo: any = {};
+    const demo: {
+      schema: Schema | null,
+      data: any,
+      uiSchema: any,
+      schemaCode: string,
+      dataCode: string,
+      uiSchemaCode: string,
+      customValidate: ((d: any, e: any) => void) | undefined
+    } = reactive({
+      schema: null,
+      data: {},
+      uiSchema: {},
+      schemaCode: "",
+      uiSchemaCode: "",
+      dataCode: "",
+      customValidate: undefined
+    });
+
+    watchEffect(() => {
+      const index = selectedRef.value;
+      const d: any = demos[index];
+      demo.schema = d.schema
+      demo.data = d.default
+      demo.uiSchema = d.uiSchema
+      demo.schemaCode = toJson(d.schema)
+      demo.dataCode = toJson(d.default)
+      demo.uiSchemaCode = toJson(d.uiSchema)
+      demo.customValidate = d.customValidate
+    })
 
     function handleCodeChange(
       field: "schema" | "data" | "uiSchema",
@@ -70,6 +102,7 @@ export default defineComponent({
       try {
         const json = JSON.parse(value);
         demo[field] = json;
+        demo[`${field}Code`] = value
       } catch (error) {
         console.log("json解析失败");
       }
@@ -81,7 +114,7 @@ export default defineComponent({
     return () => {
       const classes = classesRef.value;
       return (
-        <div class={classes.contniner}>
+        <div class={classes.container}>
           <div class={classes.menu}>
             <h1>vue3 JsonSchema Form</h1>
             <div>

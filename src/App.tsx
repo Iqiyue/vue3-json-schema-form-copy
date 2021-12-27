@@ -3,7 +3,8 @@ import { createUseStyles } from "vue-jss";
 
 import demos from "./demos";
 console.log(demos);
-
+import MonacoEditor from "./components/MonacoEditor";
+import demo from "./demos/demo";
 const useStyles = createUseStyles({
   contniner: {
     display: "flex",
@@ -34,10 +35,48 @@ const useStyles = createUseStyles({
       background: "#337ab7",
     },
   },
+  content: {
+    display: "flex",
+  },
+  code: {
+    width: 700,
+    flexShrink: 0,
+  },
+  form: {
+    padding: "0 20px",
+    flexGrow: 1,
+  },
+  codePanel: {
+    minHeight: 400,
+    marginBottom: 20,
+  },
+  uiAndValue: {
+    display: "flex",
+    justifyContent: "space-between",
+    "& > *": {
+      width: "46%",
+    },
+  },
 });
 export default defineComponent({
   setup() {
     const selectedRef = ref<number>(0);
+    const demo: any = {};
+
+    function handleCodeChange(
+      field: "schema" | "data" | "uiSchema",
+      value: string
+    ) {
+      try {
+        const json = JSON.parse(value);
+        demo[field] = json;
+      } catch (error) {
+        console.log("json解析失败");
+      }
+    }
+    const handleSchemaChange = (v: string) => handleCodeChange("schema", v);
+    const handleUISchemaChange = (v: string) => handleCodeChange("uiSchema", v);
+    const handleDataChange = (v: string) => handleCodeChange("data", v);
     const classesRef = useStyles();
     return () => {
       const classes = classesRef.value;
@@ -61,7 +100,31 @@ export default defineComponent({
               })}
             </div>
           </div>
-          <div>container</div>
+          <div class={classes.content}>
+            <div class={classes.code}>
+              <MonacoEditor
+                code={demo.schemaCode}
+                class={classes.codePanel}
+                onChange={handleSchemaChange}
+                title="Schema"
+              />
+              <div class={classes.uiAndValue}>
+                <MonacoEditor
+                  code={demo.uiSchemaCode}
+                  class={classes.codePanel}
+                  onChange={handleUISchemaChange}
+                  title="UISchema"
+                />
+                <MonacoEditor
+                  code={demo.dataCode}
+                  class={classes.codePanel}
+                  onChange={handleDataChange}
+                  title="Value"
+                />
+              </div>
+            </div>
+            <div class={classes.form}></div>
+          </div>
         </div>
       );
     };

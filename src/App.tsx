@@ -6,6 +6,7 @@ console.log(demos);
 import MonacoEditor from "./components/MonacoEditor";
 import demo from "./demos/demo";
 import { Schema } from "../lib/types";
+import SchemaForm from "../lib/SchemaForm";
 const useStyles = createUseStyles({
   container: {
     display: "flex",
@@ -60,19 +61,19 @@ const useStyles = createUseStyles({
   },
 });
 function toJson(data: any) {
-  return JSON.stringify(data, null, 2)
+  return JSON.stringify(data, null, 2);
 }
 export default defineComponent({
   setup() {
     const selectedRef = ref<number>(0);
     const demo: {
-      schema: Schema | null,
-      data: any,
-      uiSchema: any,
-      schemaCode: string,
-      dataCode: string,
-      uiSchemaCode: string,
-      customValidate: ((d: any, e: any) => void) | undefined
+      schema: Schema | null;
+      data: any;
+      uiSchema: any;
+      schemaCode: string;
+      dataCode: string;
+      uiSchemaCode: string;
+      customValidate: ((d: any, e: any) => void) | undefined;
     } = reactive({
       schema: null,
       data: {},
@@ -80,20 +81,20 @@ export default defineComponent({
       schemaCode: "",
       uiSchemaCode: "",
       dataCode: "",
-      customValidate: undefined
+      customValidate: undefined,
     });
 
     watchEffect(() => {
       const index = selectedRef.value;
       const d: any = demos[index];
-      demo.schema = d.schema
-      demo.data = d.default
-      demo.uiSchema = d.uiSchema
-      demo.schemaCode = toJson(d.schema)
-      demo.dataCode = toJson(d.default)
-      demo.uiSchemaCode = toJson(d.uiSchema)
-      demo.customValidate = d.customValidate
-    })
+      demo.schema = d.schema;
+      demo.data = d.default;
+      demo.uiSchema = d.uiSchema;
+      demo.schemaCode = toJson(d.schema);
+      demo.dataCode = toJson(d.default);
+      demo.uiSchemaCode = toJson(d.uiSchema);
+      demo.customValidate = d.customValidate;
+    });
 
     function handleCodeChange(
       field: "schema" | "data" | "uiSchema",
@@ -102,7 +103,7 @@ export default defineComponent({
       try {
         const json = JSON.parse(value);
         demo[field] = json;
-        demo[`${field}Code`] = value
+        (demo as any)[`${field}Code`] = value;
       } catch (error) {
         console.log("json解析失败");
       }
@@ -156,7 +157,13 @@ export default defineComponent({
                 />
               </div>
             </div>
-            <div class={classes.form}></div>
+            <div class={classes.form}>
+              <SchemaForm
+                value={demo.data}
+                schema={demo.schema || {}}
+                uiSchema={demo.uiSchema || {}}
+              ></SchemaForm>
+            </div>
           </div>
         </div>
       );

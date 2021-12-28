@@ -1,32 +1,34 @@
-import { defineComponent } from "vue";
+import { DefineComponent, defineComponent } from "vue";
 import { FieldPropsDefine, SchemaTypes } from "./types";
-import ObjectField from "./fields/ObjectField";
 import StringField from "./fields/StringField";
+import ObjectField from "./fields/ObjectField";
 import ArrayField from "./fields/ArrayFiled";
 import NumberField from "./fields/NumberField";
 export default defineComponent({
   name: "SchemaItem",
   props: FieldPropsDefine,
   setup(props) {
-    let Component: any;
+    let component: DefineComponent<typeof FieldPropsDefine>;
     const { schema } = props;
     const type = schema.type;
     switch (type) {
       case SchemaTypes.STRING:
-        Component = StringField;
-        break;
-      case SchemaTypes.OBJECT:
-        Component = ObjectField;
-        break;
-      case SchemaTypes.ARRAY:
-        Component = ArrayField;
+        component = StringField;
         break;
       case SchemaTypes.NUMBER:
-        Component = NumberField;
+        component = NumberField;
         break;
+      case SchemaTypes.OBJECT:
+        component = ObjectField;
+        break;
+      case SchemaTypes.ARRAY:
+        component = ArrayField;
+        break;
+      default:
+        console.warn(`${type} is not supported`);
     }
     return () => {
-      return <Component {...props} />;
+      return <component {...props} />;
     };
   },
 });

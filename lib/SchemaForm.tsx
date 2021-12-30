@@ -1,6 +1,6 @@
 import { Schema, UISchema } from "./types";
 import { defineComponent, PropType } from "vue";
-import SchemaItem from "./SchemItem";
+import SchemaItem from "./SchemaItem";
 
 export default defineComponent({
   name: "SchemaForm",
@@ -22,6 +22,8 @@ export default defineComponent({
   },
   setup(props) {
     const handleChange = (data: any) => {
+      debugger;
+
       props.onChange(data);
     };
     return () => {

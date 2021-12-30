@@ -101,6 +101,7 @@ export default defineComponent({
       value: string
     ) {
       try {
+        debugger;
         const json = JSON.parse(value);
         demo[field] = json;
         (demo as any)[`${field}Code`] = value;
@@ -113,7 +114,7 @@ export default defineComponent({
     const handleDataChange = (v: string) => handleCodeChange("data", v);
     const handleChange = (data: any) => {
       demo.data = data;
-      data.dataCode = toJson(data);
+      demo.dataCode = toJson(data);
     };
 
     const classesRef = useStyles();

@@ -65,7 +65,7 @@ function toJson(data: any) {
 }
 export default defineComponent({
   setup() {
-    const selectedRef = ref<number>(0);
+    const selectedRef = ref<number>(1);
     const demo: {
       schema: Schema | null;
       data: any;
@@ -111,6 +111,11 @@ export default defineComponent({
     const handleSchemaChange = (v: string) => handleCodeChange("schema", v);
     const handleUISchemaChange = (v: string) => handleCodeChange("uiSchema", v);
     const handleDataChange = (v: string) => handleCodeChange("data", v);
+    const handleChange = (data: any) => {
+      demo.data = data;
+      data.dataCode = toJson(data);
+    };
+
     const classesRef = useStyles();
     return () => {
       const classes = classesRef.value;
@@ -162,6 +167,7 @@ export default defineComponent({
                 value={demo.data}
                 schema={demo.schema || {}}
                 uiSchema={demo.uiSchema || {}}
+                onChange={handleChange}
               ></SchemaForm>
             </div>
           </div>

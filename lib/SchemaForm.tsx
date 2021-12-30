@@ -15,12 +15,24 @@ export default defineComponent({
     uiSchema: {
       type: Object as PropType<UISchema>,
     },
+    onChange: {
+      type: Function as PropType<(v: any) => void>,
+      required: true,
+    },
   },
   setup(props) {
+    const handleChange = (data: any) => {
+      props.onChange(data);
+    };
     return () => {
       const { schema, value, uiSchema } = props;
       return (
-        <SchemaItem schema={schema} value={value} uiSchema={uiSchema || {}} />
+        <SchemaItem
+          schema={schema}
+          value={value}
+          uiSchema={uiSchema || {}}
+          onChange={handleChange}
+        />
       );
     };
   },

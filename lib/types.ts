@@ -59,6 +59,10 @@ export const FieldPropsDefine = {
     type: Object as PropType<UISchema>,
     required: true,
   },
+  onChange: {
+    type: Function as PropType<(v: any) => void>,
+    required: true,
+  },
 } as const;
 
 export type UISchema = {

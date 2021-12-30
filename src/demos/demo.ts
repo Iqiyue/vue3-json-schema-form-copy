@@ -3,32 +3,30 @@
 export default {
   name: "demo",
   schema: {
-    type: "string",
-    minLength: 10,
-    title: "password",
-    // properties: {
-    //   pass1: {
-    //     type: "string",
-    //     minLength: 10,
-    //     title: "password",
-    //   },
-    //   pass2: {
-    //     type: "string",
-    //     minLength: 10,
-    //     title: "re-try password",
-    //   },
-    // color: {
-    //   type: "string",
-    //   format: "color",
-    //   title: "Input Color",
-    // },
-    // testkeyword: {
-    //   type: "string",
-    //   minLength: 10,
-    //   test: "true",
-    //   title: "keyword test",
-    // },
-    // },
+    type: "object",
+    properties: {
+      pass1: {
+        type: "string",
+        minLength: 10,
+        title: "password",
+      },
+      pass2: {
+        type: "string",
+        minLength: 10,
+        title: "re-try password",
+      },
+      color: {
+        type: "string",
+        format: "color",
+        title: "Input Color",
+      },
+      testkeyword: {
+        type: "string",
+        minLength: 10,
+        test: "true",
+        title: "keyword test",
+      },
+    },
   },
   default: {
     pass1: "",

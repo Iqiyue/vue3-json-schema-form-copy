@@ -8,7 +8,8 @@ export default defineComponent({
   name: "SchemaItem",
   props: FieldPropsDefine,
   setup(props) {
-    let component: DefineComponent<typeof FieldPropsDefine>;
+    //todo 得验证 componnent类型
+    let component: any;
     const { schema } = props;
     const type = schema.type;
     switch (type) {

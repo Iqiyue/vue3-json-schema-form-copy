@@ -22,8 +22,6 @@ export default defineComponent({
   },
   setup(props) {
     const handleChange = (data: any) => {
-      debugger;
-
       props.onChange(data);
     };
     return () => {

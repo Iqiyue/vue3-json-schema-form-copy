@@ -1,5 +1,6 @@
-import { defineComponent, reactive, ref, watchEffect } from "vue";
+import { defineComponent, onMounted, reactive, ref, watchEffect } from "vue";
 import { createUseStyles } from "vue-jss";
+import aa from "./aa";
 
 import demos from "./demos";
 console.log(demos);
@@ -64,6 +65,9 @@ function toJson(data: any) {
   return JSON.stringify(data, null, 2);
 }
 export default defineComponent({
+  components: {
+    aa,
+  },
   setup() {
     const selectedRef = ref<number>(1);
     const demo: {
@@ -83,6 +87,17 @@ export default defineComponent({
       dataCode: "",
       customValidate: undefined,
     });
+    const bb = reactive({
+      cc: {
+        dd: {
+          ee: 5,
+        },
+      },
+    });
+    console.log("bb", bb);
+    console.log("bb.cc", bb.cc);
+    console.log("bb.cc.dd", bb.cc.dd);
+    console.log("bb.cc.dd.ee", bb.cc.dd.ee);
 
     watchEffect(() => {
       const index = selectedRef.value;
@@ -95,13 +110,14 @@ export default defineComponent({
       demo.uiSchemaCode = toJson(d.uiSchema);
       demo.customValidate = d.customValidate;
     });
+    console.log("demo", demo);
+    console.log("demo.scheam", demo.schema);
 
     function handleCodeChange(
       field: "schema" | "data" | "uiSchema",
       value: string
     ) {
       try {
-        debugger;
         const json = JSON.parse(value);
         demo[field] = json;
         (demo as any)[`${field}Code`] = value;
@@ -118,61 +134,75 @@ export default defineComponent({
     };
 
     const classesRef = useStyles();
+    type ElFormInstance = InstanceType<typeof aa>;
+    const hh = ref<ElFormInstance | null>(null);
+    const count = ref<number>(0);
+    onMounted(() => {
+      console.log("hh", hh.value);
+      // hh.value?.open();
+    });
+    const handleAdd = (value: number) => {
+      count.value += value;
+      console.log(count.value);
+    };
     return () => {
       const classes = classesRef.value;
       return (
-        <div class={classes.container}>
-          <div class={classes.menu}>
-            <h1>vue3 JsonSchema Form</h1>
-            <div>
-              {demos.map((demo, index) => {
-                return (
-                  <button
-                    class={{
-                      [classes.menuButton]: true,
-                      [classes.menuSelected]: index == selectedRef.value,
-                    }}
-                    onClick={() => (selectedRef.value = index)}
-                  >
-                    {demo.name}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-          <div class={classes.content}>
-            <div class={classes.code}>
-              <MonacoEditor
-                code={demo.schemaCode}
-                class={classes.codePanel}
-                onChange={handleSchemaChange}
-                title="Schema"
-              />
-              <div class={classes.uiAndValue}>
-                <MonacoEditor
-                  code={demo.uiSchemaCode}
-                  class={classes.codePanel}
-                  onChange={handleUISchemaChange}
-                  title="UISchema"
-                />
-                <MonacoEditor
-                  code={demo.dataCode}
-                  class={classes.codePanel}
-                  onChange={handleDataChange}
-                  title="Value"
-                />
+        <>
+          <aa ref={hh} count={count.value} onAdd={handleAdd}></aa>
+          <div class={classes.container}>
+            <div class={classes.menu}>
+              <h1>vue3 JsonSchema Form</h1>
+              <div>
+                {demos.map((demo, index) => {
+                  return (
+                    <button
+                      class={{
+                        [classes.menuButton]: true,
+                        [classes.menuSelected]: index == selectedRef.value,
+                      }}
+                      onClick={() => (selectedRef.value = index)}
+                    >
+                      {demo.name}
+                    </button>
+                  );
+                })}
               </div>
             </div>
-            <div class={classes.form}>
-              <SchemaForm
-                value={demo.data}
-                schema={demo.schema || {}}
-                uiSchema={demo.uiSchema || {}}
-                onChange={handleChange}
-              ></SchemaForm>
+            <div class={classes.content}>
+              <div class={classes.code}>
+                <MonacoEditor
+                  code={demo.schemaCode}
+                  class={classes.codePanel}
+                  onChange={handleSchemaChange}
+                  title="Schema"
+                />
+                <div class={classes.uiAndValue}>
+                  <MonacoEditor
+                    code={demo.uiSchemaCode}
+                    class={classes.codePanel}
+                    onChange={handleUISchemaChange}
+                    title="UISchema"
+                  />
+                  <MonacoEditor
+                    code={demo.dataCode}
+                    class={classes.codePanel}
+                    onChange={handleDataChange}
+                    title="Value"
+                  />
+                </div>
+              </div>
+              <div class={classes.form}>
+                <SchemaForm
+                  value={demo.data}
+                  schema={demo.schema || {}}
+                  uiSchema={demo.uiSchema || {}}
+                  onChange={handleChange}
+                ></SchemaForm>
+              </div>
             </div>
           </div>
-        </div>
+        </>
       );
     };
   },
